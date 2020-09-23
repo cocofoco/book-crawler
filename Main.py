@@ -25,6 +25,7 @@ def search_maremagnum():
 
     # create link from which to extract individual book pages
 
+    # search_terms = 'le mille una notte nugoli'
     search_terms = input("Che cosa cerchi? ")
     search_terms_maremagnum = search_terms.strip().lower().replace(' ', '+')
     search_link_maremagnum = 'https://www.maremagnum.com/ricerca' \
@@ -39,8 +40,8 @@ def search_maremagnum():
     if number_of_results < 26:
         pass
     else:
-        print('>25 results found. No scraping done. Be more specific.')
-        sys.exit()
+        print('>25 results found. Limited scraping to first 25 elements.')
+        pass
 
     # here we find the link to the page of each book present in the search result
 
@@ -149,106 +150,81 @@ def search_maremagnum():
 
         try:
             book_year = search_year(details)
-            return book_year
         except (AttributeError, NameError):
             book_year = None
-            pass
+        finally:
+            try:
+                book_publisher = search_publisher(details)
+            except (AttributeError, NameError):
+                book_publisher = None
+            finally:
+                try:
+                    book_soggetti = search_soggetti(details)
+                except (AttributeError, NameError):
+                    book_soggetti = None
+                finally:
+                    try:
+                        book_dimensioni = search_dimensioni(details)
+                    except (AttributeError, NameError):
+                        book_dimensioni = None
+                    finally:
+                        try:
+                            book_peso = search_peso(details)
+                        except (AttributeError, NameError):
+                            book_peso = None
+                        finally:
+                            try:
+                                book_legatura = search_legatura(details)
+                            except (AttributeError, NameError):
+                                book_legatura = None
+                            finally:
+                                try:
+                                    book_collana = search_collana(details)
+                                except (AttributeError, NameError):
+                                    book_collana = None
+                                finally:
+                                    try:
+                                        book_luogo_pubblicazione = search_luogo_pubblicazione(details)
+                                    except (AttributeError, NameError):
+                                        book_luogo_pubblicazione = None
+                                    finally:
+                                        try:
+                                            book_note_bibliografiche = search_note_bibliografiche(details)
+                                        except (AttributeError, NameError):
+                                            book_note_bibliografiche = None
+                                        finally:
+                                            try:
+                                                book_volumi = search_volumi(details)
+                                            except (AttributeError, NameError):
+                                                book_volumi = None
+                                            finally:
+                                                try:
+                                                    book_edizione = search_edizione(details)
+                                                except (AttributeError, NameError):
+                                                    book_edizione = None
+                                                finally:
+                                                    try:
+                                                        book_num_pagine = search_num_pagine(details)
+                                                    except (AttributeError, NameError):
+                                                        book_num_pagine = None
+                                                    finally:
 
-        try:
-            book_publisher = search_publisher(details)
-            return book_publisher
-        except (AttributeError, NameError):
-            book_publisher = None
-            pass
+                                                        #     le altre funzioni cercano nella lista "details" -
+                                                        #     funzione: search_details(), mentre queste vanno a cercare
+                                                        #     nella pagina completa, perche si trovano
+                                                        #     sotto un parent diverso (div class header > div class links > h2,h1)
 
-        try:
-            book_soggetti = search_soggetti(details)
-            return book_soggetti
-        except (AttributeError, NameError):
-            book_soggetti = None
-            pass
+                                                        try:
+                                                            book_author = search_author(soup_whole_book_page)
+                                                        except (AttributeError, NameError):
+                                                            book_author = None
+                                                        finally:
+                                                            try:
+                                                                book_title = search_title(soup_whole_book_page)
+                                                            except (AttributeError, NameError):
+                                                                book_title = None
+                                                                pass
 
-        try:
-            book_dimensioni = search_dimensioni(details)
-            return book_dimensioni
-        except (AttributeError, NameError):
-            book_dimensioni = None
-            pass
-
-        try:
-            book_peso = search_peso(details)
-            return book_peso
-        except (AttributeError, NameError):
-            book_peso = None
-            pass
-
-        try:
-            book_legatura = search_legatura(details)
-            return book_legatura
-        except (AttributeError, NameError):
-            book_legatura = None
-            pass
-
-        try:
-            book_collana = search_collana(details)
-            return book_collana
-        except (AttributeError, NameError):
-            book_collana = None
-            pass
-
-        try:
-            book_luogo_pubblicazione = search_luogo_pubblicazione(details)
-            return book_luogo_pubblicazione
-        except (AttributeError, NameError):
-            book_luogo_pubblicazione = None
-            pass
-
-        try:
-            book_note_bibliografiche = search_note_bibliografiche(details)
-            return  book_note_bibliografiche
-        except (AttributeError, NameError):
-            book_note_bibliografiche = None
-            pass
-
-        try:
-            book_volumi = search_volumi(details)
-            return book_volumi
-        except (AttributeError, NameError):
-            book_volumi = None
-            pass
-
-        try:
-            book_edizione = search_edizione(details)
-            return  book_edizione
-        except (AttributeError, NameError):
-            book_edizione = None
-            pass
-
-        try:
-            book_num_pagine = search_num_pagine(details)
-            return book_num_pagine
-        except (AttributeError, NameError):
-            book_num_pagine = None
-            pass
-
-        #     le altre funzioni cercano nella lista "details" -
-        #     funzione: search_details(), mentre queste vanno a cercare
-        #     nella pagina completa, perche si trovano
-        #     sotto un parent diverso (div class header > div class links > h2,h1)
-
-        try:
-            book_author = search_author(soup_whole_book_page)
-            return book_author
-        except (AttributeError, NameError):
-            book_author = None
-            pass
-
-        try:
-            book_title = search_title(soup_whole_book_page)
-            return book_title
-        except (AttributeError, NameError):
-            book_title = None
-            pass
 
         book_information = {
             "Title": book_title,
@@ -269,7 +245,9 @@ def search_maremagnum():
 
         # file.write(book_information)
 
-        return book_information
+        # return book_information
+
+        print(book_information)
 
         time.sleep(0.3)
 
@@ -278,8 +256,9 @@ try:
     books = search_maremagnum()
     print(books)
     print(type(books))
-except AttributeError:
+except AttributeError as e:
     print('no results in maremagnum')
+    print(e)
     sys.exit()
 finally:
     file.close()
